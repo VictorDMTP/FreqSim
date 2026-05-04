@@ -1,5 +1,7 @@
 from src.models.base_entity import VisualEntity
 import pygame
+import math
+import random
 
 class bola(VisualEntity):
     def __init__(self,position_x, position_y, cor_hex, raio: int):
@@ -8,14 +10,23 @@ class bola(VisualEntity):
         self._raio = raio
         self._vel_x = 5
         self._vel_y = 5
+        self._sensibilidade_cor = [random.random() , random.random(), random.random()]
         
     def draw(self, screen):
         pygame.draw.circle(screen, self._cor_hex,(self._position_x, self._position_y),self._raio)
     
-    def update(self, data):
-        self._raio = self._raio_base + (abs(data) * 150) 
-        fator_velocidade = 1 + (abs(data) * 10)
+    def update(self, data,  multiplicador_ritmo = 1.0):
         
+        self._raio = self._raio_base + (abs(data) * 3)  ##cipa mudar para o raio mudar conforma grave e Agudo mas ai seria FFT 
+
+        fator_velocidade = 1 * multiplicador_ritmo
+
+        r = min(255, math.ceil(abs(data) * 255 * self._sensibilidade_cor[0]))
+        g = min(255, math.ceil(abs(data) * 255 * self._sensibilidade_cor[1]))
+        b = min(255, math.ceil(abs(data) * 255 * self._sensibilidade_cor[2]))
+
+        self._cor_hex =(r, g, b)
+
         self._position_x += self._vel_x * fator_velocidade
         self._position_y += self._vel_y * fator_velocidade
         
@@ -33,4 +44,6 @@ class bola(VisualEntity):
         elif self._position_y + self._raio >= 600:
             self._position_y = 600 - self._raio
             self._vel_y *= -1
+        
+
             
