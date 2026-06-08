@@ -15,7 +15,7 @@ class bola(VisualEntity):
         pygame.draw.circle(screen, self._cor_hex, (int(self._position_x), int(self._position_y)), int(self._raio))
     
     def update(self, data, multiplicador_ritmo=1.0):
-        self._raio = self._raio_base + (abs(data) * 55) 
+        self._raio = self._raio_base + (abs(data) * 30) 
 
         fator_velocidade = 1 * multiplicador_ritmo
 
