@@ -1,31 +1,30 @@
 from src.models.base_entity import VisualEntity
 import pygame
-import math
 import random
 
 class bola(VisualEntity):
-    def __init__(self,position_x, position_y, cor_hex, raio: int):
+    def __init__(self, position_x, position_y, cor_hex, raio: int):
         super().__init__(position_x, position_y, cor_hex)
         self._raio_base = raio 
         self._raio = raio
         self._vel_x = 5
         self._vel_y = 5
-        self._sensibilidade_cor = [random.random() , random.random(), random.random()]
+        self._matiz_base = random.randint(0, 360)
         
     def draw(self, screen):
-        pygame.draw.circle(screen, self._cor_hex,(self._position_x, self._position_y),self._raio)
+        pygame.draw.circle(screen, self._cor_hex, (int(self._position_x), int(self._position_y)), int(self._raio))
     
-    def update(self, data,  multiplicador_ritmo = 1.0):
-        
-        self._raio = self._raio_base + (abs(data) * 3)  ##cipa mudar para o raio mudar conforma grave e Agudo mas ai seria FFT 
+    def update(self, data, multiplicador_ritmo=1.0):
+        self._raio = self._raio_base + (abs(data) * 55) 
 
         fator_velocidade = 1 * multiplicador_ritmo
 
-        r = min(255, math.ceil(abs(data) * 255 * self._sensibilidade_cor[0]))
-        g = min(255, math.ceil(abs(data) * 255 * self._sensibilidade_cor[1]))
-        b = min(255, math.ceil(abs(data) * 255 * self._sensibilidade_cor[2]))
-
-        self._cor_hex =(r, g, b)
+        if multiplicador_ritmo > 1.0:
+            self._matiz_base = (self._matiz_base + 15) % 360
+        
+        cor_temp = pygame.Color(0)
+        cor_temp.hsva = (self._matiz_base, 100, 100, 100)
+        self._cor_hex = (cor_temp.r, cor_temp.g, cor_temp.b)
 
         self._position_x += self._vel_x * fator_velocidade
         self._position_y += self._vel_y * fator_velocidade
@@ -33,7 +32,6 @@ class bola(VisualEntity):
         if self._position_x - self._raio <= 0:
             self._position_x = self._raio
             self._vel_x *= -1
-            
         elif self._position_x + self._raio >= 800:
             self._position_x = 800 - self._raio
             self._vel_x *= -1
@@ -44,6 +42,3 @@ class bola(VisualEntity):
         elif self._position_y + self._raio >= 600:
             self._position_y = 600 - self._raio
             self._vel_y *= -1
-        
-
-            

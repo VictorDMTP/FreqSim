@@ -6,7 +6,8 @@ import random
 
 pygame.init()
 
-audio_files = glob('assets/audio/*.wav')
+audio_files = glob('assets/audios/*.wav')
+print("Arquivos encontrados: ", audio_files)
 
 screen = pygame.display.set_mode((800,600))
 clock = pygame.time.Clock()
@@ -28,9 +29,14 @@ manager.play(0)
 
 running = True
 while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
     ritmo = manager.get_beat_multiplier()
     amp = manager.get_current_amplitude()
+    
+    screen.fill((0,0,0)) 
     
     for b in lista_bolas:
         b.update(amp, ritmo)
@@ -40,10 +46,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             
-    screen.fill((0,0,0))         
+            
        
     pygame.display.flip()
-    
     clock.tick(60)
     
 pygame.quit()

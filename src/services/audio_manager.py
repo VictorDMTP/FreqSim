@@ -51,5 +51,5 @@ class AudioManager:
         frame_atual = librosa.time_to_frames(tempo_ms / 1000.0, sr = self._sampler_rate)
 
         if any(abs(frame_atual - beat) < 2 for beat in self._beat_frames):
-            return 2.0
+            return 3.0
         return 1.0
