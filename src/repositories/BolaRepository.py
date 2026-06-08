@@ -14,7 +14,8 @@ class BolaRepository:
                 "vel_x": float(b._vel_x),
                 "vel_y": float(b._vel_y),
                 "matiz": int(b._matiz_base),
-                "raio": int(b._raio_base)
+                "raio": int(b._raio_base),
+                "boost": float(b._boost_atual)  
             })
         with open(self.caminho, "w") as f:
             json.dump(dados, f, indent=4)
