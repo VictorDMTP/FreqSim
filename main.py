@@ -2,7 +2,6 @@ import pygame
 from src.models.bola import bola
 from src.services.audio_manager import AudioManager
 from glob import glob
-from src.repositories.BolaRepository import BolaRepository
 import random
 
 pygame.init()
@@ -10,34 +9,25 @@ pygame.init()
 audio_files = glob('assets/audios/*.wav')
 print("Arquivos encontrados: ", audio_files)
 
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 
-repo = BolaRepository()
-dados_salvos = repo.carregar()
+NUM_BOLAS = 20
+espacamento = (1280 - 160) / (NUM_BOLAS - 1)
 
 lista_bolas = []
-
-if dados_salvos:
-    for d in dados_salvos:
-        nova_bola = bola(
-            position_x=d['x'],
-            position_y=d['y'],
-            cor_hex=(0, 0, 0),
-            raio=d['raio']
-        )
-        nova_bola._vel_x = d['vel_x']
-        nova_bola._vel_y = d['vel_y']
-        nova_bola._matiz_base = d['matiz']
-        lista_bolas.append(nova_bola)
-else:
-    for i in range(10):
-         cor_aleatoria = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
-         nova_bola = bola(position_x=random.randint(100, 700), position_y=random.randint(100, 500), raio=random.randint(10, 30), cor_hex=cor_aleatoria)
-         
-         nova_bola._vel_x = random.choice([-4, -5, 4, 5]) 
-         nova_bola._vel_y = random.choice([-4, -5, 4, 5]) 
-         lista_bolas.append(nova_bola)
+for i in range(NUM_BOLAS):
+    x_dinamico = 80 + (i * espacamento)
+    cor_aleatoria = (random.randint(50,255), random.randint(50,255), random.randint(50,255))
+    
+    nova_bola = bola(
+        position_x=x_dinamico,
+        position_y=650, 
+        raio=14,
+        cor_hex=cor_aleatoria,
+        frequencia_idx=i
+    ) 
+    lista_bolas.append(nova_bola)
 
 manager = AudioManager(audio_files)
 
@@ -52,7 +42,6 @@ running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            repo.salvar(lista_bolas)
             running = False
             
         elif event.type == pygame.KEYDOWN:
@@ -79,17 +68,17 @@ while running:
                         pygame.mixer.music.pause()
             
     ritmo = manager.get_beat_multiplier()
-    amp = manager.get_current_amplitude()
+    frequencias = manager.get_current_frequencies(num_bandas=NUM_BOLAS)
     
     screen.fill((0, 0, 0)) 
     
     for b in lista_bolas:
         if not pausado:
-            b.update(amp, ritmo)
+            b.update(frequencias, ritmo)
             
         b.draw(screen)
         
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(200)
     
 pygame.quit()

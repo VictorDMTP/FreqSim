@@ -3,22 +3,17 @@ import pygame
 import random
 
 class bola(VisualEntity):
-    def __init__(self, position_x, position_y, cor_hex, raio: int):
+    def __init__(self, position_x, position_y, cor_hex, raio: int, frequencia_idx: int):
         super().__init__(position_x, position_y, cor_hex)
-        self._raio_base = raio 
-        self._raio = raio
-        self._vel_x = 5  
-        self._vel_y = 5 
+        self._raio = raio 
+        self._y_base = position_y
         self._matiz_base = random.randint(0, 360)
+        self._frequencia_idx = frequencia_idx
         
     def draw(self, screen):
         pygame.draw.circle(screen, self._cor_hex, (int(self._position_x), int(self._position_y)), int(self._raio))
     
-    def update(self, data, multiplicador_ritmo=1.0):
-        self._raio = self._raio_base + (abs(data) * 40) 
-
-        fator_velocidade = 1 * multiplicador_ritmo
-
+    def update(self, data, multiplicador_ritmo=1.0): 
         if multiplicador_ritmo > 1.0:
             self._matiz_base = random.randint(0, 360) 
         
@@ -27,19 +22,19 @@ class bola(VisualEntity):
         self._cor_hex = (cor_temp.r, cor_temp.g, cor_temp.b)
 
     
-        self._position_x += self._vel_x * fator_velocidade
-        self._position_y += self._vel_y * fator_velocidade
+        if isinstance(data, list) and self._frequencia_idx < len(data):
+            dado_som = data[self._frequencia_idx]
+        else:
+            dado_som = 0
+
+      
+       
+        multiplicador_sensibilidade = 40 + (self._frequencia_idx * 22)
         
-        if self._position_x - self._raio <= 0:
-            self._position_x = self._raio
-            self._vel_x *= -1
-        elif self._position_x + self._raio >= 800:
-            self._position_x = 800 - self._raio
-            self._vel_x *= -1
+        teto_maximo = 80 
         
-        if self._position_y - self._raio <= 0:
-            self._position_y = self._raio
-            self._vel_y *= -1
-        elif self._position_y + self._raio >= 600:
-            self._position_y = 600 - self._raio
-            self._vel_y *= -1
+        altura_alvo = self._y_base - (abs(dado_som) * multiplicador_sensibilidade)
+        altura_alvo = max(teto_maximo, min(self._y_base, altura_alvo))
+        
+    
+        self._position_y += (altura_alvo - self._position_y) * 0.25
