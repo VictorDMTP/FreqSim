@@ -10,11 +10,14 @@ class BolaRepository:
         self._historico.append(alturas_frame)
 
     def salvar(self, nome_arquivo="historico_musica.json"):
-
+        if not self._historico: 
+            return
+            
         os.makedirs("data", exist_ok=True)
         caminho = os.path.join("data", nome_arquivo)
         
         with open(caminho, "w", encoding="utf-8") as f:
             json.dump(self._historico, f, indent=2)
             
-        print(f"\n[SUCESSO] {len(self._historico)} frames da música foram salvos em: {caminho}")
+        print(f"\n[SUCESSO] {len(self._historico)} frames salvos em: {caminho}")
+        self._historico = []  

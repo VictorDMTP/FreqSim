@@ -7,12 +7,14 @@ from glob import glob
 import random
 
 pygame.init()
+pygame.font.init()
 
 audio_files = glob('assets/audios/*.wav')
 print("Arquivos encontrados: ", audio_files)
 
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
+fonte = pygame.font.SysFont("Arial", 22)
 
 NUM_BOLAS = 100
 espacamento = (1280 - 160) / (NUM_BOLAS - 1)
@@ -47,7 +49,9 @@ running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            repo.salvar()  
+            if len(audio_files) > 0:
+                nome_limpo = audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
+                repo.salvar(f"historico_{nome_limpo}.json")
             running = False
             
         elif event.type == pygame.KEYDOWN:
@@ -60,13 +64,20 @@ while running:
             
             elif event.key == pygame.K_RIGHT:
                 if len(audio_files) > 0:
+                    nome_limpo = audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
+                    repo.salvar(f"historico_{nome_limpo}.json")
+                    
                     indice_musica = (indice_musica + 1) % len(audio_files)
                     manager.load_audio(indice_musica)
                     manager.play(indice_musica)
                     if pausado:
                         pygame.mixer.music.pause()
+                        
             elif event.key == pygame.K_LEFT:
                 if len(audio_files) > 0:
+                    nome_limpo = audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
+                    repo.salvar(f"historico_{nome_limpo}.json")
+                    
                     indice_musica = (indice_musica - 1) % len(audio_files)
                     manager.load_audio(indice_musica)
                     manager.play(indice_musica)
@@ -78,12 +89,18 @@ while running:
     
     screen.fill((0, 0, 0)) 
     
+    if len(audio_files) > 0:
+        nome_atual = audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
+        texto_surface = fonte.render(f"Música: {nome_atual}", True, (255, 255, 255))
+        screen.blit(texto_surface, (80, 40))
+    
     for b in lista_bolas:
         if not pausado:
             b.update(frequencias, ritmo)
+        
+        pygame.draw.line(screen, b._cor_hex, (int(b._position_x), 650), (int(b._position_x), int(b._position_y)), 2)
         b.draw(screen)
         
-   
     if not pausado:
         objeto_areia.update(lista_bolas, 720)  
         repo.registrar_estado(lista_bolas)  

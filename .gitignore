@@ -1,3 +1,4 @@
 assets/audios/*.wav
 assets/save_bolas.json
 src.*.cpython-312.pyc
+assets/data
