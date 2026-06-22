@@ -27,8 +27,6 @@ class bola(VisualEntity):
         else:
             dado_som = 0
 
-      
-       
         multiplicador_sensibilidade = 40 + (self._frequencia_idx * 22)
         
         teto_maximo = 80 

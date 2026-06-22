@@ -2,31 +2,19 @@ import json
 import os
 
 class BolaRepository:
-    def __init__(self, caminho_arquivo="assets/save_bolas.json"):
-        self.caminho = caminho_arquivo
+    def __init__(self):
+        self._historico = []
 
-    def salvar(self, lista_bolas):
-        dados = []
-        for b in lista_bolas:
-            dados.append({
-                "x": float(b._position_x),
-                "y": float(b._position_y),
-                "vel_x": float(b._vel_x),
-                "vel_y": float(b._vel_y),
-                "matiz": int(b._matiz_base),
-                "raio": int(b._raio_base),
-                "boost": float(b._boost_atual)  
-            })
-        with open(self.caminho, "w") as f:
-            json.dump(dados, f, indent=4)
+    def registrar_estado(self, lista_bolas):
+        alturas_frame = [int(b._position_y) for b in lista_bolas]
+        self._historico.append(alturas_frame)
+
+    def salvar(self, nome_arquivo="historico_musica.json"):
+
+        os.makedirs("data", exist_ok=True)
+        caminho = os.path.join("data", nome_arquivo)
+        
+        with open(caminho, "w", encoding="utf-8") as f:
+            json.dump(self._historico, f, indent=2)
             
-    def carregar(self):
-        if not os.path.exists(self.caminho):
-            return None
-            
-        try:
-            with open(self.caminho, "r") as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            print("Aviso: Arquivo de save vazio ou corrompido. Gerando bolinhas novas...")
-            return None
+        print(f"\n[SUCESSO] {len(self._historico)} frames da música foram salvos em: {caminho}")

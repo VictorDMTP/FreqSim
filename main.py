@@ -1,6 +1,8 @@
 import pygame
 from src.models.bola import bola
+from src.models.particula import Particula  
 from src.services.audio_manager import AudioManager
+from src.repositories.BolaRepository import BolaRepository  
 from glob import glob
 import random
 
@@ -12,7 +14,7 @@ print("Arquivos encontrados: ", audio_files)
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 
-NUM_BOLAS = 20
+NUM_BOLAS = 100
 espacamento = (1280 - 160) / (NUM_BOLAS - 1)
 
 lista_bolas = []
@@ -23,11 +25,14 @@ for i in range(NUM_BOLAS):
     nova_bola = bola(
         position_x=x_dinamico,
         position_y=650, 
-        raio=14,
+        raio=4,
         cor_hex=cor_aleatoria,
         frequencia_idx=i
     ) 
     lista_bolas.append(nova_bola)
+
+objeto_areia = Particula(1280) 
+repo = BolaRepository()
 
 manager = AudioManager(audio_files)
 
@@ -42,6 +47,7 @@ running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            repo.salvar()  
             running = False
             
         elif event.type == pygame.KEYDOWN:
@@ -75,8 +81,14 @@ while running:
     for b in lista_bolas:
         if not pausado:
             b.update(frequencias, ritmo)
-            
         b.draw(screen)
+        
+   
+    if not pausado:
+        objeto_areia.update(lista_bolas, 720)  
+        repo.registrar_estado(lista_bolas)  
+        
+    objeto_areia.draw(screen) 
         
     pygame.display.flip()
     clock.tick(200)
