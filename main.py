@@ -41,17 +41,24 @@ manager = AudioManager(audio_files)
 indice_musica = 0
 pausado = True
 
+def obter_nome_musica():
+    if len(audio_files) > 0:
+        return audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
+    return ""
+
 manager.load_audio(indice_musica)
 manager.play(indice_musica)
 pygame.mixer.music.pause()
+
+
+nome_atual = obter_nome_musica()
 
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            if len(audio_files) > 0:
-                nome_limpo = audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
-                repo.salvar(f"historico_{nome_limpo}.json")
+            if nome_atual:
+                repo.salvar(f"historico_{nome_atual}.json")
             running = False
             
         elif event.type == pygame.KEYDOWN:
@@ -64,10 +71,11 @@ while running:
             
             elif event.key == pygame.K_RIGHT:
                 if len(audio_files) > 0:
-                    nome_limpo = audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
-                    repo.salvar(f"historico_{nome_limpo}.json")
+                    repo.salvar(f"historico_{nome_atual}.json") 
                     
                     indice_musica = (indice_musica + 1) % len(audio_files)
+                    nome_atual = obter_nome_musica() 
+                    
                     manager.load_audio(indice_musica)
                     manager.play(indice_musica)
                     if pausado:
@@ -75,10 +83,11 @@ while running:
                         
             elif event.key == pygame.K_LEFT:
                 if len(audio_files) > 0:
-                    nome_limpo = audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
-                    repo.salvar(f"historico_{nome_limpo}.json")
+                    repo.salvar(f"historico_{nome_atual}.json")
                     
                     indice_musica = (indice_musica - 1) % len(audio_files)
+                    nome_atual = obter_nome_musica() 
+                    
                     manager.load_audio(indice_musica)
                     manager.play(indice_musica)
                     if pausado:
@@ -89,8 +98,7 @@ while running:
     
     screen.fill((0, 0, 0)) 
     
-    if len(audio_files) > 0:
-        nome_atual = audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
+    if nome_atual:
         texto_surface = fonte.render(f"Música: {nome_atual}", True, (255, 255, 255))
         screen.blit(texto_surface, (80, 40))
     

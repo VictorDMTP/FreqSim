@@ -21,18 +21,16 @@ class bola(VisualEntity):
         cor_temp.hsva = (self._matiz_base, 100, 100, 100)
         self._cor_hex = (cor_temp.r, cor_temp.g, cor_temp.b)
 
-    
         if isinstance(data, list) and self._frequencia_idx < len(data):
             dado_som = data[self._frequencia_idx]
         else:
             dado_som = 0
 
-        multiplicador_sensibilidade = 40 + (self._frequencia_idx * 22)
+        multiplicador_sensibilidade = 40 + (self._frequencia_idx * 4.5)
         
         teto_maximo = 250
         
         altura_alvo = self._y_base - (abs(dado_som) * multiplicador_sensibilidade)
         altura_alvo = max(teto_maximo, min(self._y_base, altura_alvo))
         
-    
         self._position_y += (altura_alvo - self._position_y) * 0.25
