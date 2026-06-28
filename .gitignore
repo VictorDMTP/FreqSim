@@ -1,4 +1,5 @@
-assets/audios/*.wav
+assets/audios/*
+!assets/audios/.gitkeep
 assets/save_bolas.json
 src.*.cpython-312.pyc
 assets/data
