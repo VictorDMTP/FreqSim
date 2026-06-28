@@ -3,3 +3,5 @@ assets/audios/*
 assets/save_bolas.json
 src.*.cpython-312.pyc
 assets/data
+**/__pycache__/
+*.pyc

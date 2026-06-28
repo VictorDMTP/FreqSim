@@ -9,7 +9,7 @@ class Particula:
     def reset(self):
         self._x = random.randint(100, self._largura_tela - 100)
         self._y = -20
-        self._raio = 5  
+        self._raio = 10  
         self._vel_y = 6
         self._vel_x = 0
         self._cor = (255, 215, 0)

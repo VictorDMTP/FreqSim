@@ -29,7 +29,7 @@ class bola(VisualEntity):
 
         multiplicador_sensibilidade = 40 + (self._frequencia_idx * 22)
         
-        teto_maximo = 80 
+        teto_maximo = 250
         
         altura_alvo = self._y_base - (abs(dado_som) * multiplicador_sensibilidade)
         altura_alvo = max(teto_maximo, min(self._y_base, altura_alvo))
