@@ -9,7 +9,7 @@ import random
 pygame.init()
 pygame.font.init()
 
-audio_files = glob('assets/audios/*.wav')
+audio_files = glob('assets/audios/*.wav') + glob('assets/audios/*.mp3')
 print("Arquivos encontrados: ", audio_files)
 
 screen = pygame.display.set_mode((1280, 720))
@@ -43,7 +43,8 @@ pausado = True
 
 def obter_nome_musica():
     if len(audio_files) > 0:
-        return audio_files[indice_musica].split('/')[-1].split('\\')[-1].replace('.wav', '')
+        nome_com_extensao = audio_files[indice_musica].split('/')[-1].split('\\')[-1]
+        return nome_com_extensao.replace('.wav', '').replace('.mp3', '')
     return ""
 
 manager.load_audio(indice_musica)
